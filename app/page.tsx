@@ -200,7 +200,7 @@ export default function Home() {
                 letterSpacing: '-0.01em',
               }}
             >
-              SN Docs Demo
+              SN Docs MCP
             </span>
           </div>
 
@@ -320,7 +320,7 @@ export default function Home() {
                 letterSpacing: '-0.01em',
               }}
             >
-              SN Docs Demo
+              SN Docs MCP
             </span>
           </div>
           <div
