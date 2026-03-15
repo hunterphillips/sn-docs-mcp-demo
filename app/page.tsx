@@ -6,27 +6,32 @@ import remarkGfm from 'remark-gfm';
 import { QUESTIONS } from '@/lib/questions';
 
 const C = {
-  bg: '#F0F5F8',
+  // Base (warm neutral)
+  bg: '#FAFAF8',
   white: '#FFFFFF',
-  border: '#DDE5ED',
-  text: '#111820',
-  textSub: '#5E7280',
-  textMuted: '#96A8B5',
-  accent: '#B8601A',
-  // sidebar
-  sidebar: '#14232C',
-  sidebarBorder: 'rgba(255,255,255,0.07)',
-  sidebarSub: 'rgba(255,255,255,0.3)',
-  navText: 'rgba(255,255,255,0.55)',
-  navDot: 'rgba(255,255,255,0.2)',
-  navActiveBg: 'rgba(184,96,26,0.22)',
-  navActiveText: '#F5C89A',
-  navActiveDot: '#B8601A',
-  // badges
-  baseBadgeBg: '#F1F5F9',
-  baseBadgeText: '#64748B',
-  mcpBadgeBg: '#ECFDF5',
-  mcpBadgeText: '#059669',
+  border: '#E6DFD5',
+  text: '#1C1410',
+  textSub: '#504234',
+  textMuted: '#9C8070',
+  // Teal accent
+  accent: '#0D9488',
+  // Sidebar (light)
+  sidebar: '#FFFFFF',
+  sidebarBorder: '#ECE5DC',
+  navText: '#7C6454',
+  navHover: '#F5EFE6',
+  navActiveText: '#0D9488',
+  navActiveBg: 'rgba(13,148,136,0.07)',
+  // Base card header
+  baseHeadBg: '#F8F4EE',
+  baseBadgeBg: '#E5DDD0',
+  baseBadgeText: '#5E4E3C',
+  // Docs card header (teal)
+  mcpHeadBg: '#EAFAF6',
+  mcpHeadBorder: '#96E4CE',
+  mcpBadgeBg: '#96E4CE',
+  mcpBadgeText: '#065F46',
+  mcpLabelText: '#0D9488',
 } as const;
 
 const FONT = 'var(--font-jakarta, "Plus Jakarta Sans", sans-serif)';
@@ -72,46 +77,34 @@ export default function Home() {
   const isLoading = base.loading || mcp.loading;
   const activeQuestion = QUESTIONS.find((q) => q.id === activeId);
 
-  // ── Shared topic button renderer ──────────────────────────
   function TopicButton({ q }: { q: (typeof QUESTIONS)[number] }) {
     const active = activeId === q.id;
     return (
       <button
-        key={q.id}
         onClick={() => ask(q.id)}
         disabled={isLoading && !active}
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: isMobile ? '8px 14px' : '8px 10px',
-          borderRadius: '6px',
+          display: 'block',
+          width: isMobile ? 'auto' : '100%',
+          textAlign: 'left',
+          padding: isMobile ? '7px 14px' : '7px 10px 7px 16px',
+          borderRadius: '5px',
           border: isMobile
-            ? `1px solid ${active ? 'rgba(184,96,26,0.4)' : 'rgba(255,255,255,0.12)'}`
+            ? `1px solid ${active ? 'rgba(13,148,136,0.3)' : 'rgba(0,0,0,0.08)'}`
             : 'none',
           backgroundColor: active ? C.navActiveBg : 'transparent',
           color: active ? C.navActiveText : C.navText,
-          fontSize: isMobile ? '13px' : '12.5px',
-          fontWeight: active ? 500 : 400,
+          fontSize: '13.5px',
+          fontWeight: active ? 600 : 400,
           lineHeight: '1.4',
-          whiteSpace: 'nowrap',
+          whiteSpace: isMobile ? 'nowrap' : 'normal',
           cursor: isLoading && !active ? 'not-allowed' : 'pointer',
           opacity: isLoading && !active ? 0.4 : 1,
-          transition: 'background-color 0.1s ease, color 0.1s ease',
+          transition: 'background-color 0.1s, color 0.1s',
           fontFamily: FONT,
           flexShrink: 0,
         }}
       >
-        <span
-          style={{
-            width: '6px',
-            height: '6px',
-            borderRadius: '50%',
-            backgroundColor: active ? C.navActiveDot : C.navDot,
-            flexShrink: 0,
-            transition: 'background-color 0.1s ease',
-          }}
-        />
         {q.label}
       </button>
     );
@@ -131,44 +124,213 @@ export default function Home() {
       {!isMobile && (
         <aside
           style={{
-            width: '220px',
+            width: '300px',
             flexShrink: 0,
             backgroundColor: C.sidebar,
+            borderRight: `1px solid ${C.sidebarBorder}`,
             display: 'flex',
             flexDirection: 'column',
           }}
         >
-          <div style={{ padding: '20px 16px 16px', borderBottom: `1px solid ${C.sidebarBorder}` }}>
-            <div style={{ fontSize: '13px', fontWeight: 600, color: '#EEF4F8', letterSpacing: '-0.01em' }}>
-              SN MCP Demo
+          <div
+            style={{
+              padding: '22px 20px 18px 24px',
+              borderBottom: `1px solid ${C.sidebarBorder}`,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+            }}
+          >
+            <div
+              style={{
+                width: '26px',
+                height: '26px',
+                borderRadius: '6px',
+                backgroundColor: C.accent,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <rect
+                  x="1"
+                  y="1"
+                  width="5"
+                  height="5"
+                  rx="1.2"
+                  fill="white"
+                  opacity="0.95"
+                />
+                <rect
+                  x="8"
+                  y="1"
+                  width="5"
+                  height="5"
+                  rx="1.2"
+                  fill="white"
+                  opacity="0.95"
+                />
+                <rect
+                  x="1"
+                  y="8"
+                  width="5"
+                  height="5"
+                  rx="1.2"
+                  fill="white"
+                  opacity="0.95"
+                />
+                <rect
+                  x="8"
+                  y="8"
+                  width="5"
+                  height="5"
+                  rx="1.2"
+                  fill="white"
+                  opacity="0.42"
+                />
+              </svg>
             </div>
-            <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', marginTop: '3px' }}>
-              Compare AI responses
-            </div>
+            <span
+              style={{
+                fontSize: '14px',
+                fontWeight: 700,
+                color: C.text,
+                letterSpacing: '-0.01em',
+              }}
+            >
+              SN Docs Demo
+            </span>
           </div>
-          <nav style={{ flex: 1, padding: '16px 8px', overflowY: 'auto' }}>
-            <p style={{ fontSize: '10px', fontWeight: 600, color: C.sidebarSub, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 8px', margin: '0 0 6px' }}>
-              Topics
+
+          <nav
+            style={{
+              flex: 1,
+              padding: '16px 10px 16px 8px',
+              overflowY: 'auto',
+            }}
+          >
+            <p
+              style={{
+                fontSize: '11px',
+                fontWeight: 600,
+                color: C.textMuted,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                padding: '0 8px 0 16px',
+                margin: '0 0 4px',
+                fontFamily: FONT,
+              }}
+            >
+              Questions
             </p>
             {QUESTIONS.map((q) => (
               <TopicButton key={q.id} q={q} />
             ))}
           </nav>
+
+          <div
+            style={{
+              padding: '12px 20px 18px 24px',
+              borderTop: `1px solid ${C.sidebarBorder}`,
+              fontSize: '11.5px',
+              color: C.textMuted,
+              lineHeight: '1.55',
+            }}
+          >
+            Select a question to compare responses with and without docs.
+          </div>
         </aside>
       )}
 
       {/* ── Mobile header ── */}
       {isMobile && (
-        <div style={{ backgroundColor: C.sidebar, flexShrink: 0 }}>
-          <div style={{ padding: '14px 16px 10px', borderBottom: `1px solid ${C.sidebarBorder}` }}>
-            <span style={{ fontSize: '13px', fontWeight: 600, color: '#EEF4F8', letterSpacing: '-0.01em' }}>
-              SN MCP Demo
-            </span>
-            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', marginLeft: '10px' }}>
-              Compare AI responses
+        <div
+          style={{
+            backgroundColor: C.sidebar,
+            borderBottom: `1px solid ${C.sidebarBorder}`,
+            flexShrink: 0,
+          }}
+        >
+          <div
+            style={{
+              padding: '14px 20px 12px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+            }}
+          >
+            <div
+              style={{
+                width: '22px',
+                height: '22px',
+                borderRadius: '5px',
+                backgroundColor: C.accent,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                <rect
+                  x="1"
+                  y="1"
+                  width="5"
+                  height="5"
+                  rx="1.2"
+                  fill="white"
+                  opacity="0.95"
+                />
+                <rect
+                  x="8"
+                  y="1"
+                  width="5"
+                  height="5"
+                  rx="1.2"
+                  fill="white"
+                  opacity="0.95"
+                />
+                <rect
+                  x="1"
+                  y="8"
+                  width="5"
+                  height="5"
+                  rx="1.2"
+                  fill="white"
+                  opacity="0.95"
+                />
+                <rect
+                  x="8"
+                  y="8"
+                  width="5"
+                  height="5"
+                  rx="1.2"
+                  fill="white"
+                  opacity="0.42"
+                />
+              </svg>
+            </div>
+            <span
+              style={{
+                fontSize: '14px',
+                fontWeight: 700,
+                color: C.text,
+                letterSpacing: '-0.01em',
+              }}
+            >
+              SN Docs Demo
             </span>
           </div>
-          <div style={{ overflowX: 'auto', padding: '10px 12px', display: 'flex', gap: '6px' }}>
+          <div
+            style={{
+              overflowX: 'auto',
+              padding: '0 12px 12px',
+              display: 'flex',
+              gap: '6px',
+            }}
+          >
             {QUESTIONS.map((q) => (
               <TopicButton key={q.id} q={q} />
             ))}
@@ -184,26 +346,78 @@ export default function Home() {
           minHeight: 0,
           backgroundColor: C.bg,
           overflowY: 'auto',
-          padding: isMobile ? '16px' : '24px',
+          padding: isMobile ? '20px 16px' : '32px 40px',
           display: 'flex',
           flexDirection: 'column',
-          gap: isMobile ? '16px' : '20px',
         }}
       >
         {!activeId && (
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '200px' }}>
-            <p style={{ fontSize: '14px', color: C.textMuted }}>
-              {isMobile ? 'Select a topic above' : 'Select a topic from the sidebar'}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: '200px',
+            }}
+          >
+            <p
+              style={{ fontSize: '14px', color: C.textMuted, fontFamily: FONT }}
+            >
+              {isMobile
+                ? 'Select a topic above'
+                : 'Select a topic from the sidebar'}
             </p>
           </div>
         )}
 
         {activeQuestion && (
-          <div style={{ backgroundColor: C.white, borderRadius: '8px', border: `1px solid ${C.border}`, boxShadow: '0 1px 3px rgba(0,0,0,0.05)', padding: '16px 20px', flexShrink: 0 }}>
-            <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: C.accent, marginBottom: '6px' }}>
-              Selected Topic
+          <div
+            style={{
+              backgroundColor: C.white,
+              borderRadius: '10px',
+              border: `1px solid ${C.border}`,
+              boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+              padding: isMobile ? '16px 20px' : '20px 24px',
+              marginBottom: isMobile ? '16px' : '20px',
+            }}
+          >
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                fontSize: '11px',
+                fontWeight: 600,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                color: C.accent,
+                marginBottom: '10px',
+                fontFamily: FONT,
+              }}
+            >
+              <span
+                style={{
+                  width: '4px',
+                  height: '4px',
+                  borderRadius: '50%',
+                  backgroundColor: C.accent,
+                  opacity: 0.55,
+                  display: 'inline-block',
+                }}
+              />
+              {activeQuestion.label}
             </div>
-            <p style={{ margin: 0, fontSize: isMobile ? '15px' : '16px', fontWeight: 500, color: C.text, letterSpacing: '-0.02em', lineHeight: '1.4' }}>
+            <p
+              style={{
+                margin: 0,
+                fontSize: isMobile ? '16px' : '18px',
+                fontWeight: 600,
+                color: C.text,
+                letterSpacing: '-0.02em',
+                lineHeight: '1.4',
+                fontFamily: FONT,
+              }}
+            >
               {activeQuestion.prompt}
             </p>
           </div>
@@ -214,7 +428,7 @@ export default function Home() {
             style={{
               display: 'grid',
               gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-              gap: isMobile ? '16px' : '20px',
+              gap: '16px',
               alignItems: 'start',
             }}
           >
@@ -276,14 +490,15 @@ async function streamMode(
 
 function ResponseCard({ mode, state }: { mode: Mode; state: PanelState }) {
   const isMcp = mode === 'mcp';
+  const FONT = 'var(--font-jakarta, "Plus Jakarta Sans", sans-serif)';
 
   return (
     <div
       style={{
         backgroundColor: C.white,
-        borderRadius: '8px',
+        borderRadius: '10px',
         border: `1px solid ${C.border}`,
-        boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.03)',
+        boxShadow: '0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.03)',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
@@ -292,72 +507,73 @@ function ResponseCard({ mode, state }: { mode: Mode; state: PanelState }) {
       {/* Card header */}
       <div
         style={{
-          padding: '14px 20px',
-          borderBottom: `1px solid ${C.border}`,
+          padding: '12px 18px',
+          borderBottom: `1px solid ${isMcp ? C.mcpHeadBorder : C.border}`,
+          backgroundColor: isMcp ? C.mcpHeadBg : C.baseHeadBg,
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
           flexShrink: 0,
         }}
       >
-        <span style={{ fontSize: '13px', fontWeight: 600, color: C.text }}>
-          {isMcp ? 'Claude + MCP' : 'Claude'}
+        <span
+          style={{
+            fontSize: '10px',
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            padding: '2px 7px',
+            borderRadius: '4px',
+            backgroundColor: isMcp ? C.mcpBadgeBg : C.baseBadgeBg,
+            color: isMcp ? C.mcpBadgeText : C.baseBadgeText,
+            fontFamily: FONT,
+          }}
+        >
+          {isMcp ? 'With Docs' : 'Base Model'}
         </span>
         <span
           style={{
-            padding: '3px 7px',
-            borderRadius: '4px',
-            fontSize: '10px',
-            fontWeight: 600,
-            letterSpacing: '0.06em',
-            textTransform: 'uppercase',
-            backgroundColor: isMcp ? C.mcpBadgeBg : C.baseBadgeBg,
-            color: isMcp ? C.mcpBadgeText : C.baseBadgeText,
+            fontSize: '12px',
+            color: isMcp ? C.mcpLabelText : C.textMuted,
+            fontFamily: FONT,
           }}
         >
-          {isMcp ? 'Docs-Enhanced' : 'Base Model'}
+          {isMcp ? 'Claude + MCP' : 'Claude'}
         </span>
-        <div
-          style={{
-            marginLeft: 'auto',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px',
-            fontSize: '11px',
-            color: state.loading
-              ? C.textMuted
-              : isMcp
-                ? C.mcpBadgeText
-                : C.textMuted,
-          }}
-        >
+        {state.loading && (
           <span
             style={{
-              width: '7px',
-              height: '7px',
-              borderRadius: '50%',
-              backgroundColor: state.loading
-                ? C.textMuted
-                : isMcp
-                  ? C.mcpBadgeText
-                  : '#CBD5E1',
+              marginLeft: 'auto',
+              fontSize: '11px',
+              color: isMcp ? C.mcpLabelText : C.textMuted,
+              fontFamily: FONT,
+              opacity: 0.8,
             }}
-          />
-          {state.loading ? (isMcp ? 'searching…' : 'thinking…') : ''}
-        </div>
+          >
+            {isMcp ? 'searching…' : 'thinking…'}
+          </span>
+        )}
       </div>
 
       {/* Card body */}
       <div
         style={{
-          padding: '20px',
-          fontSize: '13.5px',
+          padding: '20px 18px',
+          fontSize: '14.5px',
           lineHeight: '1.72',
-          color: C.text,
+          color: C.textSub,
+          fontFamily: FONT,
         }}
       >
         {state.error && (
-          <p style={{ fontSize: '13px', color: '#DC2626', margin: 0 }}>
+          <p
+            style={{
+              fontSize: '13px',
+              color: '#DC2626',
+              margin: 0,
+              fontFamily: FONT,
+            }}
+          >
             {state.error}
           </p>
         )}
@@ -374,8 +590,9 @@ function ResponseCard({ mode, state }: { mode: Mode; state: PanelState }) {
                     color: C.text,
                     marginTop: 0,
                     marginBottom: '14px',
-                    letterSpacing: '-0.03em',
+                    letterSpacing: '-0.025em',
                     lineHeight: '1.3',
+                    fontFamily: FONT,
                   }}
                 >
                   {children}
@@ -384,12 +601,13 @@ function ResponseCard({ mode, state }: { mode: Mode; state: PanelState }) {
               h2: ({ children }) => (
                 <h2
                   style={{
-                    fontSize: '14px',
+                    fontSize: '14.5px',
                     fontWeight: 600,
                     color: C.text,
                     marginTop: '22px',
                     marginBottom: '8px',
-                    letterSpacing: '-0.02em',
+                    letterSpacing: '-0.015em',
+                    fontFamily: FONT,
                   }}
                 >
                   {children}
@@ -400,11 +618,12 @@ function ResponseCard({ mode, state }: { mode: Mode; state: PanelState }) {
                   style={{
                     fontSize: '12px',
                     fontWeight: 600,
-                    color: C.textSub,
+                    color: C.textMuted,
                     marginTop: '18px',
                     marginBottom: '6px',
                     letterSpacing: '0.04em',
                     textTransform: 'uppercase',
+                    fontFamily: FONT,
                   }}
                 >
                   {children}
@@ -413,10 +632,11 @@ function ResponseCard({ mode, state }: { mode: Mode; state: PanelState }) {
               p: ({ children }) => (
                 <p
                   style={{
-                    fontSize: '13.5px',
+                    fontSize: '14.5px',
                     lineHeight: '1.72',
-                    color: C.text,
+                    color: C.textSub,
                     marginBottom: '12px',
+                    fontFamily: FONT,
                   }}
                 >
                   {children}
@@ -441,10 +661,11 @@ function ResponseCard({ mode, state }: { mode: Mode; state: PanelState }) {
               li: ({ children }) => (
                 <li
                   style={{
-                    fontSize: '13.5px',
+                    fontSize: '14.5px',
                     lineHeight: '1.65',
-                    color: C.text,
+                    color: C.textSub,
                     marginBottom: '5px',
+                    fontFamily: FONT,
                   }}
                 >
                   {children}
@@ -456,14 +677,14 @@ function ResponseCard({ mode, state }: { mode: Mode; state: PanelState }) {
                 </strong>
               ),
               em: ({ children }) => (
-                <em style={{ color: C.textSub }}>{children}</em>
+                <em style={{ color: C.textMuted }}>{children}</em>
               ),
               code: ({ children }) => (
                 <code
                   style={{
                     fontSize: '12px',
                     fontFamily: 'var(--font-mono, monospace)',
-                    backgroundColor: '#EEF3F8',
+                    backgroundColor: '#F0EBE3',
                     color: C.text,
                     padding: '1px 5px',
                     borderRadius: '3px',
@@ -477,9 +698,9 @@ function ResponseCard({ mode, state }: { mode: Mode; state: PanelState }) {
                   style={{
                     fontSize: '12px',
                     fontFamily: 'var(--font-mono, monospace)',
-                    backgroundColor: '#F4F8FB',
+                    backgroundColor: '#F5F0E8',
                     border: `1px solid ${C.border}`,
-                    borderRadius: '6px',
+                    borderRadius: '7px',
                     padding: '14px 16px',
                     marginBottom: '14px',
                     overflowX: 'auto',
@@ -495,7 +716,7 @@ function ResponseCard({ mode, state }: { mode: Mode; state: PanelState }) {
                     borderLeft: `3px solid ${C.border}`,
                     paddingLeft: '14px',
                     marginBottom: '12px',
-                    color: C.textSub,
+                    color: C.textMuted,
                     fontStyle: 'italic',
                   }}
                 >
@@ -527,7 +748,7 @@ function ResponseCard({ mode, state }: { mode: Mode; state: PanelState }) {
               display: 'inline-block',
               width: '2px',
               height: '15px',
-              backgroundColor: isMcp ? C.mcpBadgeText : C.textMuted,
+              backgroundColor: isMcp ? C.accent : C.textMuted,
               borderRadius: '1px',
               verticalAlign: 'middle',
               marginLeft: '2px',
