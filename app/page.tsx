@@ -239,7 +239,7 @@ export default function Home() {
               lineHeight: '1.55',
             }}
           >
-            Select a question to compare responses with and without docs.
+            Select a question to compare responses with and without using MCP.
           </div>
         </aside>
       )}
