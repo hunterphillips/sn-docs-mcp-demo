@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# sn-docs-demo
 
-## Getting Started
+Demo UI comparing Claude's responses with and without access to the [ServiceNow Docs MCP server](https://sn-doc-search.fly.dev). Pick a predefined question and see both answers stream side-by-side.
 
-First, run the development server:
+## Stack
+
+- Next.js 14 (App Router), TypeScript, Tailwind CSS
+- `@anthropic-ai/sdk` — streaming API calls, base and MCP-enhanced
+- `@upstash/ratelimit` + `@upstash/redis` — IP-based rate limiting (5 req/min)
+- Deployed on Vercel
+
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.local.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Fill in `.env.local`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Variable | Required | Description |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | Yes | Anthropic API key |
+| `SN_DOCS_API_KEY` | Yes | Bearer token for the SN docs MCP server |
+| `UPSTASH_REDIS_REST_URL` | No | Enables rate limiting |
+| `UPSTASH_REDIS_REST_TOKEN` | No | Enables rate limiting |
+| `CRON_SECRET` | No | Secures the `/api/cron/ping` keepalive route |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Rate limiting is disabled locally unless the Upstash vars are set.
 
-## Learn More
+## Development
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run dev       # http://localhost:3000
+npx tsc --noEmit  # type check
+npm run build     # production build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `app/page.tsx` — single-page UI: question picker + two streaming comparison panels
+- `app/api/ask/route.ts` — POST streaming API route; `mode=base` or `mode=mcp`
+- `app/api/cron/ping/route.ts` — weekly keepalive ping for Upstash Redis
+- `lib/questions.ts` — predefined demo questions (edit here to add/change)
+- `lib/ratelimit.ts` — Upstash config; no-ops if env vars are absent
+- `vercel.json` — Vercel cron schedule (weekly Redis ping)
 
-## Deploy on Vercel
+## How it works
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Base mode**: Streams a plain Claude response with no tools.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**MCP mode**: Uses `anthropic.beta.messages.stream` with `mcp_servers` pointing to the Fly.io MCP server. Anthropic's infrastructure calls the MCP server — no local MCP client process needed.
+
+Both modes use the same model and system prompt so the only variable is doc access.
+
+**No freeform input**: All questions are predefined in `lib/questions.ts`. The UI has no text input field.
