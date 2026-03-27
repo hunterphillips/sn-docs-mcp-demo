@@ -13,8 +13,10 @@ Demo UI comparing Claude's responses with and without access to the [ServiceNow 
 
 - `app/page.tsx` — single-page UI: question picker + two streaming comparison panels
 - `app/api/ask/route.ts` — POST streaming API route; `mode=base` or `mode=mcp`
+- `app/api/cron/ping/route.ts` — weekly keepalive ping for Upstash Redis (called by Vercel cron)
 - `lib/questions.ts` — hardcoded demo questions (edit here to add/change questions)
 - `lib/ratelimit.ts` — Upstash config; no-ops if env vars are absent
+- `vercel.json` — Vercel cron schedule (weekly Redis ping)
 
 ## Development
 
