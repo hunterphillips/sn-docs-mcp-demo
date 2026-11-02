@@ -13,16 +13,20 @@ const SYSTEM =
   "You are a helpful ServiceNow assistant. Answer clearly and specifically. Keep responses under 250 words. If you don't know something or lack current documentation, say so rather than guessing.";
 
 export async function POST(req: NextRequest) {
-  // Rate limiting
+  // Rate limiting — fails open so a Redis outage doesn't take the demo down
   const ratelimiter = getRatelimiter();
   if (ratelimiter) {
     const ip =
       req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'anonymous';
-    const { success } = await ratelimiter.limit(ip);
-    if (!success) {
-      return new Response('Rate limit reached. Please wait a moment.', {
-        status: 429,
-      });
+    try {
+      const { success } = await ratelimiter.limit(ip);
+      if (!success) {
+        return new Response('Rate limit reached. Please wait a moment.', {
+          status: 429,
+        });
+      }
+    } catch (err) {
+      console.error('Rate limiter unavailable, allowing request:', err);
     }
   }
 
